@@ -15,6 +15,23 @@ defaults
         timeout client  10m
         timeout server  10m
 
+listen stats
+    mode   http
+    bind :10086
+    stats   enable
+    stats   uri     /admin?stats
+    stats   auth    admin:admin
+    stats   admin   if TRUE
+
+listen k8s_http
+        bind 0.0.0.0:9090
+        mode http
+        option tcplog
+        balance roundrobin
+#注意不同kube-master上面的haproxy配置都为127.0.0.1:8080，其他的注释掉
+        #server 192.168.63.61 192.168.63.61:8080 check inter 2000 fall 2 rise 2 weight 1
+        server 192.168.63.62 127.0.0.1:8080 check inter 2000 fall 2 rise 2 weight 1
+
 listen kube-master
         bind 0.0.0.0:{{ KUBE_APISERVER.split(':')[2] }}
         mode tcp
