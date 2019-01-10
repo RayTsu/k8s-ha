@@ -31,6 +31,9 @@
 - name: 配置 haproxy
   template: src=haproxy.cfg.j2 dest=/etc/haproxy/haproxy.cfg
 
+- name: daemon-reload for haproxy.service
+  shell: systemctl daemon-reload
+
 - name: 开机启用haproxy服务
   shell: systemctl enable haproxy
   ignore_errors: true
